@@ -20,3 +20,8 @@ git reset HEAD <file>...		把暂存区的修改撤销掉，重新放回工作区
 rm file 			工作区删除文件（正常删除本地文件）
 git rm <file>...	从版本库中删除对应文件，然后git commit -m 'message'
 所有操作都是修改（包括删除），可以使用撤销修改找回删除的文件
+
+远程仓库
+git remote add origin https://github.com/rongruosong/learngit.git 	本地仓库关联远程仓库，origin为远程库的默认名字也可以改为别的
+git push -u origin master 											本地库内容推送到远程库，第一次推送master分支时，加上-u，git会把本地的master分支内容推送到远程新																		的master分支，而且把本地master与远程的master关联起来，简化以后的推送或拉取命令
+git push origin master												把本地master分支的最新修改推送至GitHub
