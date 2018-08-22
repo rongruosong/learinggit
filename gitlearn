@@ -1,0 +1,22 @@
+git init
+文件放入仓库
+工作区(本地文件夹)	工作区有一个隐藏目录.git，这个是git的版本库，包含：stage(暂存区)、自动创建的master分支以及指向master的HEAD指针
+	1.git add <file>     		eg: git add file2.txt file3.txt		实际把文件修改添加到暂存区
+	2.git commit -m <message> 	eg: git commit -m "add 2 files."	实际把暂存区的所有内容提交到当前分支
+
+git status 	查看当前仓库状态，显示什么文件被修改过
+git diff 	查看具体修改内容
+
+版本回退
+git log						查看提交历史
+git reset --hard commit_id	回退到commit_id(版本号)对应的版本（HEAD^、HEAD^^、……、HEAD~100）
+git reflog					查看历史命令， 以便确定要回到未来的哪个版本
+
+撤销修改
+git checkout --<file>... 		丢弃工作区的修改，回到最近一次git commit或git add时的状态		eg： git checkout -- readme.txt
+git reset HEAD <file>...		把暂存区的修改撤销掉，重新放回工作区
+
+删除文件
+rm file 			工作区删除文件（正常删除本地文件）
+git rm <file>...	从版本库中删除对应文件，然后git commit -m 'message'
+所有操作都是修改（包括删除），可以使用撤销修改找回删除的文件
