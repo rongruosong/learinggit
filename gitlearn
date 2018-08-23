@@ -1,5 +1,5 @@
 git init
-文件放入仓库
+1.文件放入仓库
 工作区(本地文件夹)	工作区有一个隐藏目录.git，这个是git的版本库，包含：stage(暂存区)、自动创建的master分支以及指向master的HEAD指针
 	1.git add <file>     		eg: git add file2.txt file3.txt		实际把文件修改添加到暂存区
 	2.git commit -m <message> 	eg: git commit -m "add 2 files."	实际把暂存区的所有内容提交到当前分支
@@ -7,28 +7,31 @@ git init
 git status 	查看当前仓库状态，显示什么文件被修改过
 git diff 	查看具体修改内容
 
-版本回退
-git log						查看提交历史
-git reset --hard commit_id	回退到commit_id(版本号)对应的版本（HEAD^、HEAD^^、……、HEAD~100）
-git reflog					查看历史命令， 以便确定要回到未来的哪个版本
+2.版本回退
+	git log						查看提交历史
+	git reset --hard commit_id	回退到commit_id(版本号)对应的版本（HEAD^、HEAD^^、……、HEAD~100）
+	git reflog					查看历史命令， 以便确定要回到未来的哪个版本
 
-撤销修改
-git checkout --<file>... 		丢弃工作区的修改，回到最近一次git commit或git add时的状态		eg： git checkout -- readme.txt
-git reset HEAD <file>...		把暂存区的修改撤销掉，重新放回工作区
+3.撤销修改
+	git checkout --<file>... 		丢弃工作区的修改，回到最近一次git commit或git add时的状态		eg： git checkout -- readme.txt
+	git reset HEAD <file>...		把暂存区的修改撤销掉，重新放回工作区
 
-删除文件
-rm file 			工作区删除文件（正常删除本地文件）
-git rm <file>...	从版本库中删除对应文件，然后git commit -m 'message'
-所有操作都是修改（包括删除），可以使用撤销修改找回删除的文件
+4.删除文件
+	rm file 			工作区删除文件（正常删除本地文件）
+	git rm <file>...	从版本库中删除对应文件，然后git commit -m 'message'
+	所有操作都是修改（包括删除），可以使用撤销修改找回删除的文件
 
-远程仓库
-git remote add origin https://github.com/rongruosong/learngit.git 	本地仓库关联远程仓库，origin为远程库的默认名字也可以改为别的
-git push -u origin master 											本地库内容推送到远程库，第一次推送master分支时，加上-u，git会把本地的master分支内容推送到远程新																		的master分支，而且把本地master与远程的master关联起来，简化以后的推送或拉取命令
-git push origin master												把本地master分支的最新修改推送至GitHub
+5.远程仓库
+	git remote add [shortname] [url]									添加一个新的远程库，并指定简单的名字
+	git remote remove <name>											删除指定名字的远程库
+	git remote rename <old> <new>
+	git remote add origin https://github.com/rongruosong/learngit.git 	本地仓库关联远程仓库，origin为远程库的默认名字也可以改为别的
+	git push -u origin master 											本地库内容推送到远程库，第一次推送master分支时，加上-u，git会把本地的master分支内容推送到远																		程新的master分支，而且把本地master与远程的master关联起来，简化以后的推送或拉取命令
+	git remote add 
+	git push origin master												把本地master分支的最新修改推送至GitHub
+	git clone https://github.com/rongruosong/learngit.git 				从远程库克隆
 
-git clone https://github.com/rongruosong/learngit.git 				从远程库克隆
-
-分支管理
+6.分支管理
 	1.创建于合并分支
 		git branch					查看分支
 		git branch <name>			创建分支
@@ -36,4 +39,51 @@ git clone https://github.com/rongruosong/learngit.git 				从远程库克隆
 		git chechout -b <name>		创建+切换分支
 		git merge <name>			合并某分支到当前分支
 		git branch -d <name>		删除分支
-	2.解决冲突
+		git branch -D <name>		强制删除分支
+
+	2.分支管理策略
+		git merge <name> 							git使用Fast Forward模式，删除分支后会丢掉分支信息
+		git merge --no-ff -m 'message' <name> 		强制禁用Fast Forward模式，git会在merge时生成一个新commit，这样从分支历史上就可以看出分支信息
+		合并分支时，加上--no-ff参数就可以用普通模式合并，合并后的历史有分支，能看出来曾经做过合并，而fast forward合并就看不出来曾经做过合并
+
+	3.bug分支
+		1.保存工作现场
+			在Git中，分支方便，所以每个bug都可以通过一个新的临时分支来修复，修复后合并分支，然后将临时分支删除。
+			git stash			将当前工作现场“储藏”起来，等以后恢复现场后继续工作
+			git stash list		查看现场
+
+		2.恢复工作现场
+			git stash apply		恢复，stash内容并不删除，需要git stash drop来删除 eg:git stash apply stash@{0}
+			git stash pop		恢复同时把stash内容也删除
+
+	4.Feature分支
+
+	5.多人协作
+		git remote						查看远程库信息 -v 显示更详细的信息
+
+		1.推送分支
+			git push origin <local branch-name>:<branch-name>	将本地分支更新推送到远程
+			git push origin :<branch-name>						省略本地分支是，表示删除指定的远程分支
+			git push origin										如果当前分支与远程分支之间存在追踪关系，则本地分支和远程分支都可以省略
+			1.master分支和开发分支dev都需要与远程同步
+			2.bug分支用于本地修复bug，没有推到远程
+			3.feature分支是否推送到远程，取决于是否要同步开发
+
+		2.抓取分支
+			从远程库克隆时，默认情况下，只能看到本地的master分支
+			git checkout -b dev origin/dev			创建远程库origin的dev分支到本地
+			git pull origin <branch-name>			从远程库获取分支最新版本并merge到本地的指定分支 eg：git pull origin <branch-name>:<local branch-name>
+													相当于下面两个命令
+			git fetch origin <branch-name>			更新远程分支，省略<branch-name>则更新远程跟踪分支,不会自动合并
+			git merge origin/<branch-name>
+
+		3.多人协作工作模式
+		多人协作时，存在你和小伙伴对同一个分支进行修改的可能，如果你们对相同的文件做了修改，在推送时会失败，这是因为推送的提交冲突
+			1.首先，尝试使用git push origin <branch-name>推送自己的修改
+			2.如果推送失败，因为远程库与本地库不同步，需要使用git pull将本地库与远程库同步
+			3.如果合并有冲突，则解决冲突，并在本地提交
+			4.没有冲突或者解决掉冲突后，使用git push origin <branch-name>推送到远程库
+		如果git pull 提示no tracking information，则说明本地分支和远程分支的链接关系每一偶创建，使用git branch --set-upstream-to <branch-name> origin/<branch-name>
+		建立追踪关系，git pull时就可以省略远程分支名 
+		eg: git pull origin  将本地当前分支自动与对应的origin主机“追踪分支”进行合并，如果当前分支只追踪一个分支，远程主机名也可以省略 git pull
+
